@@ -1,4 +1,4 @@
-require_relative '../../spec/spec_helper'
+require_relative '../spec_helper'
 
 describe Gurps::Campaign do
   it "should have 100 starting points by default" do
