@@ -1,6 +1,6 @@
 module Gurps
   class Character
-    attr_accessor :strength, :dexterity, :intelligence, :health, :encumbrance, :height, :weight
+    attr_accessor :strength, :dexterity, :intelligence, :health, :encumbrance, :height, :weight, :points_to_spend
 
     alias_method :st, :strength
     alias_method :dx, :dexterity
@@ -10,6 +10,7 @@ module Gurps
     def initialize(points = 100)
       @strength = @dexterity = @intelligence = @health = 10
       @encumbrance = 0
+      @points_to_spend = points
     end
 
     def lifting
@@ -19,10 +20,6 @@ module Gurps
     def basic_lift
       # TODO implementar home gravity (p.17)
       (lifting / 5).floor
-    end
-
-    def points_to_spend
-      100
     end
 
     def thrust_damage
@@ -93,6 +90,10 @@ module Gurps
 
     def weight
       ((strength - 6) * 15) + 90
+    end
+
+    def buy(advantage)
+      @points_to_spend += Gurps::Advantage[advantage][:cost]
     end
 
     private
