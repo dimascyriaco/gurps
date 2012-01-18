@@ -1,6 +1,6 @@
 module Gurps
   class Character
-    attr_accessor :strength, :dexterity, :intelligence, :health, :weight
+    attr_accessor :strength, :dexterity, :intelligence, :health, :encumbrance, :height, :weight
 
     alias_method :st, :strength
     alias_method :dx, :dexterity
@@ -9,7 +9,7 @@ module Gurps
 
     def initialize(points = 100)
       @strength = @dexterity = @intelligence = @health = 10
-      @weight = 0
+      @encumbrance = 0
     end
 
     def lifting
@@ -77,7 +77,7 @@ module Gurps
     end
 
     def encumbrance_level
-      case weight
+      case encumbrance
         when 0..basic_lift
           0
         when basic_lift..(basic_lift*2)
@@ -89,6 +89,10 @@ module Gurps
         when (basic_lift * 6)..(basic_lift * 10)
           4
       end
+    end
+
+    def weight
+      ((strength - 6) * 15) + 90
     end
 
     private

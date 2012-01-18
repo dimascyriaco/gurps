@@ -74,8 +74,12 @@ describe Gurps::Character do
       char.basic_move.should == 5
     end
 
-    it "should have weight of 0," do
-      char.weight.should == 0
+    it "should have encumbrance of 0," do
+      char.encumbrance.should == 0
+    end
+
+    it "should have weight of 150" do
+      char.weight.should == 150
     end
   end
 
@@ -93,6 +97,10 @@ describe Gurps::Character do
     it "should have basic move of 5" do
       char.basic_move.should == 5
     end
+
+    it "should have weight of 165" do
+      char.weight.should == 165
+    end
   end
 
   context "encumbrance" do
@@ -100,7 +108,7 @@ describe Gurps::Character do
 
     context "when carring 10 lbs" do
       before(:each) do
-        char.weight = 10
+        char.encumbrance = 10
       end
 
       it "should have encumbrance level of 0" do
@@ -118,7 +126,7 @@ describe Gurps::Character do
 
     context "when carring 20 lbs" do
       before(:each) do
-        char.weight = 20
+        char.encumbrance = 20
       end
 
       it "should have encumbrance level of 0" do
@@ -136,7 +144,7 @@ describe Gurps::Character do
 
     context "when carring 21 lbs" do
       before(:each) do
-        char.weight = 21
+        char.encumbrance = 21
       end
 
       it "should have encumbrance level of 1" do
@@ -154,7 +162,7 @@ describe Gurps::Character do
 
     context "when carring 40 lbs" do
       before(:each) do
-        char.weight = 40
+        char.encumbrance = 40
       end
 
       it "should have encumbrance level of 1" do
@@ -172,7 +180,7 @@ describe Gurps::Character do
 
     context "when carring 41 lbs" do
       before(:each) do
-        char.weight = 41
+        char.encumbrance = 41
       end
 
       it "should have encumbrance level of 2" do
@@ -190,7 +198,7 @@ describe Gurps::Character do
 
     context "when carring 60 lbs" do
       before(:each) do
-        char.weight = 60
+        char.encumbrance = 60
       end
 
       it "should have encumbrance level of 2" do
@@ -208,7 +216,7 @@ describe Gurps::Character do
 
     context "when carring 61 lbs" do
       before(:each) do
-        char.weight = 61
+        char.encumbrance = 61
       end
 
       it "should have encumbrance level of 3" do
@@ -226,7 +234,7 @@ describe Gurps::Character do
 
     context "when carring 120 lbs" do
       before(:each) do
-        char.weight = 120
+        char.encumbrance = 120
       end
 
       it "should have encumbrance level of 3" do
@@ -244,7 +252,7 @@ describe Gurps::Character do
 
     context "when carring 121 lbs" do
       before(:each) do
-        char.weight = 121
+        char.encumbrance = 121
       end
 
       it "should have encumbrance level of 4" do
@@ -262,7 +270,7 @@ describe Gurps::Character do
 
     context "when carring 200 lbs" do
       before(:each) do
-        char.weight = 200
+        char.encumbrance = 200
       end
 
       it "should have encumbrance level of 4" do
