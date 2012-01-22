@@ -1,0 +1,31 @@
+skinny:
+  cost: -5
+  modifiers:
+    - target: weight
+      level: '*2/3'
+    - target: disguise
+      level: '-2'
+    - target: shadowing
+      level: '-2'
+    - target: health
+      upper_limit: '14'
+  secondary_effects:
+    - target: strength
+      level: '-2'
+      situation: 'resist knockback'
+
+overweight:
+  cost: -5
+  modifiers:
+    - target: weight
+      level: '*1.3'
+    - target: disguise
+      level: '-1'
+    - target: shadowing
+      level: '-1'
+    - target: swimming
+      level: '+1'
+  secondary_effects:
+    - target: strength
+      level: '+1'
+      situation: 'resist knockback'

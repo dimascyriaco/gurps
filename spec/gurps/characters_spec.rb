@@ -286,4 +286,20 @@ describe Gurps::Character do
       end
     end
   end
+
+  context "modifiers" do
+    let(:char) { Gurps::Character.new }
+
+    before(:each) do
+      char.buy :skinny
+    end
+
+    it "should have a modifier for weight" do
+      char.modifiers_for(:weight).should_not be_empty
+    end
+
+    it "should have a modifier value for weight" do
+      char.modifiers_for(:weight).first.level.should == "*2/3"
+    end
+  end
 end
