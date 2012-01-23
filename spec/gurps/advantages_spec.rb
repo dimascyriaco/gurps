@@ -11,7 +11,7 @@ describe Gurps::Advantage do
   end
 
   before(:each) do
-    Gurps::Advantage.register(advantage)
+    Gurps::Advantage.register(:fat, advantage[:fat])
   end
 
   it "should list available advantages" do

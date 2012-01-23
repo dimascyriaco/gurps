@@ -12,13 +12,13 @@ module Gurps
       @@advantages[name]
     end
 
-    # @param hash [Hash]
+    # @param name [String]
+    # @param attributes [Hash]
     # @return [NilClass]
-    def self.register hash
-      hash.recursively_symbolize_keys!
-      key = hash.keys.first
-      hash[key][:modifiers] = generate_modifiers(hash[key])
-      @@advantages[key] = self.new(hash[key])
+    def self.register name, attributes
+      attributes.recursively_symbolize_keys!
+      attributes[:modifiers] = generate_modifiers(attributes)
+      @@advantages[name.to_sym] = self.new(attributes)
     end
 
     # @return [Array]
@@ -30,8 +30,8 @@ module Gurps
     # @return [NilClass]
     def self.load file
       yml = YAML.load_file file
-      yml.each do |name, properties|
-        register name => properties
+      yml.each do |name, attributes|
+        register name, attributes
       end
     end
 
@@ -50,8 +50,7 @@ module Gurps
     # @param hash [Hash]
     # @return [Hash]
     def self.generate_modifiers hash
-      modifiers = hash.delete :modifiers
-      modifiers.map { |m| Gurps::Character::Modifier.new(m) } if modifiers
+      hash[:modifiers].map { |m| Gurps::Character::Modifier.new(m) } if hash[:modifiers]
     end
   end
 end
