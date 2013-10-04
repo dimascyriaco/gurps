@@ -10,6 +10,7 @@ module Gurps
     def initialize(points = 100)
       @strength = @dexterity = @intelligence = @health = 10
       @encumbrance = 0
+      @modifiers = []
       @points_to_spend = points
     end
 
@@ -20,7 +21,7 @@ module Gurps
 
     # @return [Numeric]
     def basic_lift
-      # TODO implementar home gravity (p.17)
+      # TODO implement home gravity (p.17)
       (lifting / 5).floor
     end
 
@@ -61,7 +62,7 @@ module Gurps
 
     # @return [Numeric]
     def fatigue
-      # TODO tratar machines (p.16)
+      # TODO treat machines (p.16)
       health
     end
     alias_method :fat, :fatigue
@@ -83,7 +84,7 @@ module Gurps
 
     # @return [Numeric]
     def move
-      basic_move * move_modificator
+      basic_move * move_modifier
     end
 
     # @return [Numeric]
@@ -97,14 +98,15 @@ module Gurps
           2
         when (basic_lift * 3)..(basic_lift * 6)
           3
-        when (basic_lift * 6)..(basic_lift * 10)
+        else
           4
       end
     end
 
     # @return [Numeric]
     def weight
-      ((strength - 6) * 15) + 90
+      value = (((strength - 6) * 15) + 90)
+      apply_modifiers(:weight, value)
     end
 
     # @param advantage [String]
@@ -116,7 +118,8 @@ module Gurps
     end
 
     # @param modifiers [Array]
-    def register_modifiers modifiers
+    # @return [Array<Character::Modifier>]
+    def register_modifiers(modifiers)
       @modifiers ||= []
       @modifiers = @modifiers | modifiers
     end
@@ -127,10 +130,25 @@ module Gurps
       @modifiers.select {|e| e.target.to_sym == attribute }
     end
 
+    # @param [Symbol, String] attribute
+    # @param [Integer] value
+    # @return [Integer]
+    def apply_modifiers(attribute, value)
+      modifiers_for(attribute).each do |modifier|
+        a, b = modifier.value.split('/')
+
+        if modifier.type == 'multiplier'
+          value = value * (a.to_f / b.to_i)
+        end
+      end
+
+      value.floor
+    end
+
     private
 
     # @return [Numeric]
-    def move_modificator
+    def move_modifier
       (1.to_f - ((encumbrance_level) * 0.2)).round(1)
     end
 
