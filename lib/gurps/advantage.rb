@@ -1,6 +1,7 @@
 module Gurps
   class Advantage
-    @@advantages = {}
+    @advantages = {}
+    class << self; attr_reader :advantages; end
 
     def initialize attr
       @attr = attr
@@ -9,7 +10,7 @@ module Gurps
     # @param name [String]
     # @return [Gurps::Advantage]
     def self.[](name)
-      @@advantages[name]
+      advantages[name]
     end
 
     # @param name [String]
@@ -18,12 +19,12 @@ module Gurps
     def self.register name, attributes
       attributes.recursively_symbolize_keys!
       attributes[:modifiers] = generate_modifiers(attributes)
-      @@advantages[name.to_sym] = self.new(attributes)
+      advantages[name.to_sym] = self.new(attributes)
     end
 
     # @return [Array]
     def self.available
-      @@advantages.keys
+      advantages.keys
     end
 
     # @param file [File]
@@ -41,7 +42,7 @@ module Gurps
     end
 
     def self.method_missing name, *args
-      return @@advantages[name] if @@advantages.include? name
+      return advantages[name] if advantages.include? name
       super name, *args
     end
 
