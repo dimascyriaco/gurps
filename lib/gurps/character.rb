@@ -1,6 +1,8 @@
 module Gurps
   class Character
-    attr_accessor :strength, :dexterity, :intelligence, :health, :encumbrance, :height, :weight, :points_to_spend
+    include Abilitude::Character
+
+    attr_accessor :strength, :dexterity, :intelligence, :health, :encumbrance, :height, :points
 
     alias_method :st, :strength
     alias_method :dx, :dexterity
@@ -10,85 +12,79 @@ module Gurps
     def initialize(points = 100)
       @strength = @dexterity = @intelligence = @health = 10
       @encumbrance = 0
-      @modifiers = []
-      @points_to_spend = points
+      @points = points
     end
 
-    # @return [Numeric]
-    def lifting
-      @strength * @strength
-    end
-
-    # @return [Numeric]
-    def basic_lift
+    attribute :basic_lift do
       # TODO implement home gravity (p.17)
       (lifting / 5).floor
     end
 
-    # @return [String]
-    def thrust_damage
+    attribute :thrust_damage, :thr do
       Table['damage'].get_value_for_column('Thrust', strength)
     end
-    alias_method :thr, :thrust_damage
+
+    attribute :lifting do
+      strength * strength
+    end
+
+    attribute :weight do
+      (((strength - 6) * 15) + 90)
+    end
 
     # @return [String]
-    def swing_damage
+    attribute :swing_damage, :sw do
       Table['damage'].get_value_for_column('Swing', strength)
     end
-    alias_method :sw, :swing_damage
 
     # @return [String]
-    def damage
+    attribute :damage, :dmg do
       thrust_damage + "/" + swing_damage
     end
-    alias_method :dmg, :damage
 
     # @return [Numeric]
-    def hit_points
+    attribute :hit_points, :hp do
       health
     end
-    alias_method :hp, :hit_points
 
     # @return [Numeric]
-    def will
+    attribute :will do
       intelligence
     end
 
     # @return [Numeric]
-    def perception
+    attribute :perception, :per do
       intelligence
     end
-    alias_method :per, :perception
 
     # @return [Numeric]
-    def fatigue
+    attribute :fatigue, :fat do
       # TODO treat machines (p.16)
       health
     end
-    alias_method :fat, :fatigue
 
     # @return [Numeric]
-    def basic_speed
+    attribute :basic_speed do
       (strength + dexterity).to_f / 4
     end
 
     # @return [Numeric]
-    def dodge
+    attribute :dodge do
       (basic_speed + 3).floor - encumbrance_level
     end
 
     # @return [Numeric]
-    def basic_move
+    attribute :basic_move do
       basic_speed.floor
     end
 
     # @return [Numeric]
-    def move
+    attribute :move do
       basic_move * move_modifier
     end
 
     # @return [Numeric]
-    def encumbrance_level
+    attribute :encumbrance_level do
       case encumbrance
         when 0..basic_lift
           0
@@ -103,48 +99,6 @@ module Gurps
       end
     end
 
-    # @return [Numeric]
-    def weight
-      value = (((strength - 6) * 15) + 90)
-      apply_modifiers(:weight, value)
-    end
-
-    # @param advantage [String]
-    # @return [NilClass]
-    def buy(advantage)
-      advantage = Gurps::Advantage[advantage]
-      @points_to_spend += advantage.cost.to_i
-      self.register_modifiers advantage.modifiers
-    end
-
-    # @param modifiers [Array]
-    # @return [Array<Character::Modifier>]
-    def register_modifiers(modifiers)
-      @modifiers ||= []
-      @modifiers = @modifiers | modifiers
-    end
-
-    # @param attribute [String]
-    # @return [Array]
-    def modifiers_for attribute
-      @modifiers.select {|e| e.target.to_sym == attribute }
-    end
-
-    # @param [Symbol, String] attribute
-    # @param [Integer] value
-    # @return [Integer]
-    def apply_modifiers(attribute, value)
-      modifiers_for(attribute).each do |modifier|
-        a, b = modifier.value.split('/')
-
-        if modifier.type == 'multiplier'
-          value = value * (a.to_f / b.to_i)
-        end
-      end
-
-      value.floor
-    end
-
     private
 
     # @return [Numeric]
@@ -153,7 +107,14 @@ module Gurps
     end
 
     class Modifier < OpenStruct
+      def apply(attribute)
+        integer, fraction = value.split('/')
 
+        if type == 'multiplier'
+          attribute = attribute * (integer.to_f / fraction.to_i)
+        end
+        attribute
+      end
     end
   end
 end

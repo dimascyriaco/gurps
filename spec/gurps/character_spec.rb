@@ -7,7 +7,7 @@ describe Gurps::Character do
     end
 
     it 'should have 100 points to spend by default' do
-      char.points_to_spend.should == 100
+      char.points.should == 100
     end
 
     it 'should start with strength of 10' do
@@ -291,15 +291,7 @@ describe Gurps::Character do
     let(:char) { Gurps::Character.new }
 
     before(:each) do
-      char.buy :skinny
-    end
-
-    it 'should have a modifier for weight' do
-      char.modifiers_for(:weight).should_not be_empty
-    end
-
-    it 'should have a modifier value for weight' do
-      expect(char.modifiers_for(:weight).first.value).to eq('2/3')
+      char.add_trait Gurps::Advantage[:skinny]
     end
 
     it 'should modify the character weight' do

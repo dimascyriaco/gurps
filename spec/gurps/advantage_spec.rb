@@ -27,14 +27,14 @@ describe Gurps::Advantage do
     it 'should discount the cost from the character available points' do
       char = Gurps::Character.new
       lambda do
-        char.buy(:fat)
-      end.should change(char, :points_to_spend).by(-5)
+        char.add_trait(Gurps::Advantage[:fat])
+      end.should change(char, :points).by(-5)
     end
 
     it 'should discount the cost from the character available points' do
       char = Gurps::Character.new
       expect(char.weight).to eq(150)
-      char.buy(:fat)
+      char.add_trait(Gurps::Advantage[:fat])
       expect(char.weight).to eq(100)
     end
   end
@@ -45,7 +45,7 @@ describe Gurps::Advantage do
     end
 
     it 'should set the cost' do
-      Gurps::Advantage.fat.cost.should == '-5'
+      Gurps::Advantage.fat.cost.should == -5
     end
 
     it 'should set the modifiers' do

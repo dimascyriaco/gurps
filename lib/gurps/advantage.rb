@@ -7,8 +7,12 @@ module Gurps
       @attr = attr
     end
 
-    # @param name [String]
-    # @return [Gurps::Advantage]
+    def apply_to(applicable)
+      applicable.change :points, cost
+      applicable.add_modifiers modifiers
+    end
+
+    # @param name [String]# @return [Gurps::Advantage]
     def self.[](name)
       advantages[name]
     end
@@ -34,6 +38,10 @@ module Gurps
       yml.each do |name, attributes|
         register name, attributes
       end
+    end
+
+    def cost
+      @attr[:cost].to_i
     end
 
     def method_missing name, *args
